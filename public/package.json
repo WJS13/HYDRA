@@ -1,0 +1,26 @@
+{
+  "name": "mi-proyecto-mistral",
+  "version": "1.0.0",
+  "description": "Conexión a Mistral con Hugging Face",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "example": "node examples/basic-usage.js",
+    "test": "node test-new-api.js"
+  },
+  "dependencies": {
+    "@huggingface/inference": "^4.11.3",
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0"
+  },
+  "keywords": [
+    "mistral",
+    "huggingface",
+    "ai",
+    "nodejs"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT"
+}
