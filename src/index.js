@@ -19,8 +19,17 @@ async function main() {
     // Middleware para parsear JSON
     app.use(express.json());
 
-    // Servir archivos estáticos
-    app.use(express.static(path.join(__dirname, '../public')));
+    // Servir archivos estáticos (sin servir index por defecto)
+    app.use(express.static(path.join(__dirname, '../public'), { index: false }));
+
+    // Rutas para páginas principales
+    app.get('/', (req, res) => {
+      res.sendFile(path.join(__dirname, '../public/index.html'));
+    });
+
+    app.get('/dashboard', (req, res) => {
+      res.sendFile(path.join(__dirname, '../public/dashboard.html'));
+    });
 
     // Endpoint para el chat
     app.post('/api/chat', async (req, res) => {
@@ -42,6 +51,43 @@ async function main() {
         res.status(500).json({
           success: false,
           error: 'Lo siento, hubo un problema al procesar tu mensaje. Por favor, intenta nuevamente en unos momentos'
+        });
+      }
+    });
+
+    app.post('/api/recommendations', async (req, res) => {
+      try {
+        const { userId, summary } = req.body;
+
+        if (!userId || !summary) {
+          return res.status(400).json({
+            success: false,
+            error: 'Se requiere userId y summary para generar recomendaciones'
+          });
+        }
+
+        const result = await chatController.generateSessionInsights(userId, summary);
+
+        if (!result.success) {
+          const status = result.error?.toLowerCase().includes('token') ? 401 : 502;
+          return res.status(status).json({
+            success: false,
+            error: result.error,
+            suggestion: result.suggestion
+          });
+        }
+
+        res.json({
+          success: true,
+          recommendations: result.recommendations,
+          newGoalLiters: result.newGoalLiters,
+          raw: result.raw
+        });
+      } catch (error) {
+        console.error('Error en /api/recommendations:', error);
+        res.status(500).json({
+          success: false,
+          error: 'No se pudieron generar recomendaciones en este momento'
         });
       }
     });

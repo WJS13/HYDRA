@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydra · Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="dashboard">
+  <div class="app-shell">
+    <header class="topbar topbar--plain">
+      <div class="user-chip">
+        <img src="assets/avatar.png" alt="Usuario" class="avatar">
+        <div>
+          <p class="label">Hola,</p>
+          <p id="user-name">Usuario</p>
+        </div>
+      </div>
+      <button class="icon-button" onclick="navigateTo('profile.html')">⚙</button>
+    </header>
+
+    <main class="page-content">
+      <section class="card highlight-card">
+        <p class="label">Meta diaria</p>
+        <h2 id="daily-goal">Hoy intenta gastar menos de 20 L</h2>
+        <p class="muted-text small-text" id="daily-insights">Seguimiento automático desde tu HydraPod.</p>
+      </section>
+
+      <section class="grid two-columns">
+        <article class="metric-card">
+          <span class="label">Ahorro mensual</span>
+          <h3 id="monthly-savings-currency">S/ 0.00</h3>
+          <p class="muted-text small-text">Comparado con el promedio del mes pasado.</p>
+        </article>
+        <article class="metric-card">
+          <span class="label">Agua ahorrada</span>
+          <h3 id="monthly-savings-water">0 L</h3>
+          <p class="muted-text small-text">Gracias a tus duchas eficientes.</p>
+        </article>
+      </section>
+
+      <section class="card">
+        <header class="section-heading">
+          <h2>Ranking familiar</h2>
+          <button class="link-button" onclick="navigateTo('ranking.html')">Ver todo</button>
+        </header>
+        <ul class="list compact" id="mini-ranking"></ul>
+      </section>
+
+      <section class="grid">
+        <button class="primary-button" onclick="navigateTo('live.html')">Ducha en vivo</button>
+        <button class="secondary-button" onclick="navigateTo('group.html')">Grupo</button>
+        <button class="secondary-button" onclick="navigateTo('profile.html')">Perfil</button>
+      </section>
+    </main>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>
