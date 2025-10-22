@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydra · Emparejar HydraPod</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="pairing">
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-button" onclick="navigateBack()">←</button>
+      <h1>Emparejar HydraPod</h1>
+    </header>
+
+    <main class="page-content">
+      <section class="card center-card">
+        <img src="assets/logo.png" alt="Hydra" class="circle-graphic">
+        <div class="status-pill" id="pairing-status">Escaneando QR…</div>
+        <p class="muted-text">Acerca tu móvil al HydraPod para escanear el código QR y conectar a tu red WiFi.</p>
+        <div class="progress-ring">
+          <div class="progress-ring__inner" id="pairing-progress"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Red detectada</h2>
+        <div class="wifi-info">
+          <div>
+            <p class="label">SSID</p>
+            <p id="wifi-ssid">—</p>
+          </div>
+          <div>
+            <p class="label">Intensidad</p>
+            <p id="wifi-strength">—</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer-actions">
+      <button class="primary-button" id="finish-pairing" disabled>Finalizar</button>
+    </footer>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>

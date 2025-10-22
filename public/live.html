@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydra · Ducha en vivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="live">
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-button" onclick="navigateBack()">←</button>
+      <h1>Ducha en vivo</h1>
+    </header>
+
+    <main class="page-content">
+      <section class="card center-card">
+        <div class="consumption-meter" id="consumption-meter">
+          <div class="consumption-meter__value" id="live-total-liters">0 L</div>
+          <p class="muted-text small-text">Meta: <span id="live-goal">20 L</span></p>
+        </div>
+        <div class="telemetry-grid">
+          <div>
+            <p class="label">Flujo</p>
+            <h3 id="live-flow">0 L/min</h3>
+          </div>
+          <div>
+            <p class="label">Potencia</p>
+            <h3 id="live-power">0 W</h3>
+          </div>
+          <div>
+            <p class="label">Temperatura</p>
+            <h3 id="live-temperature">0 °C</h3>
+          </div>
+          <div>
+            <p class="label">Tiempo</p>
+            <h3 id="live-timer">00:00</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Consejo de Hoy</h2>
+        <p id="live-tip" class="muted-text">—</p>
+      </section>
+    </main>
+
+    <footer class="footer-actions">
+      <button class="danger-button" id="end-shower">Terminar ducha</button>
+    </footer>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>

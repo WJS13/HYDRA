@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydra · Grupo familiar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="group">
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-button" onclick="navigateBack()">←</button>
+      <h1>Grupo familiar</h1>
+    </header>
+
+    <main class="page-content">
+      <section class="card highlight-card">
+        <p class="label">Ahorro del grupo</p>
+        <h2 id="group-total-savings">S/ 0.00</h2>
+        <p class="muted-text small-text">Equivalente a <span id="group-total-water">0 L</span> menos de consumo.</p>
+      </section>
+
+      <section class="card">
+        <h2>Miembros</h2>
+        <ul class="list" id="group-members"></ul>
+      </section>
+
+      <section class="grid">
+        <button class="secondary-button" id="invite-member">Invitar miembro</button>
+        <button class="secondary-button" id="create-challenge">Crear reto</button>
+      </section>
+    </main>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>

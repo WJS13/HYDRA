@@ -1,119 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Shower Analytics</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydra - Bienvenido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-
-    <!-- Página de inicio/login (pantalla completa) -->
-    <div class="login-page" id="login-page">
-        <img src="logo.png" alt="Logo" class="app-logo login-logo">
-        <form id="login-form" class="login-form-full">
-            <input type="text" id="login-username" placeholder="Usuario o Email" required>
-            <input type="password" id="login-password" placeholder="Contraseña" required>
-            <button type="submit" class="primary-button">Iniciar Sesión</button>
+<body data-page="index">
+  <div class="app-shell">
+    <main class="auth-container full-screen" id="auth-container">
+      <section class="card auth-card" id="login-section">
+        <img src="assets/logo.png" alt="Hydra" class="auth-logo auth-logo--large">
+        <h2 class="auth-title">Inicia sesi&oacute;n</h2>
+        <form id="login-form" class="form">
+          <label class="form-field">
+            <span>Correo electr&oacute;nico</span>
+            <input type="email" placeholder="usuario@correo.com" required>
+          </label>
+          <label class="form-field">
+            <span>Contrase&ntilde;a</span>
+            <input type="password" placeholder="********" required>
+          </label>
+          <button type="submit" class="primary-button">Entrar</button>
         </form>
-        <div class="login-links-full">
-            <a href="#" id="show-register">¿No tienes cuenta? Regístrate</a>
-            <a href="#" id="show-forgot">¿Olvidaste tu contraseña?</a>
-        </div>
-    </div>
+        <p class="muted-text small-text">
+          &iquest;Nuevo por aqu&iacute;?
+          <button class="link-button" id="show-register">Crear cuenta</button>
+        </p>
+      </section>
 
-    <!-- Página de registro (pantalla completa) -->
-    <div class="register-page" id="register-page" style="display:none;">
-        <img src="logo.png" alt="Logo" class="app-logo login-logo">
-        <form id="register-form" class="login-form-full">
-            <input type="text" id="register-username" placeholder="Usuario" required>
-            <input type="email" id="register-email" placeholder="Email" required>
-            <input type="password" id="register-password" placeholder="Contraseña" required>
-            <button type="submit" class="primary-button">Registrarse</button>
+      <section class="card auth-card hidden" id="register-section">
+        <img src="assets/logo.png" alt="Hydra" class="auth-logo auth-logo--large">
+        <h2 class="auth-title">Crear cuenta</h2>
+        <form id="register-form" class="form">
+          <label class="form-field">
+            <span>Nombre completo</span>
+            <input type="text" placeholder="Ana Torres" required>
+          </label>
+          <label class="form-field">
+            <span>Correo electr&oacute;nico</span>
+            <input type="email" placeholder="usuario@correo.com" required>
+          </label>
+          <label class="form-field">
+            <span>Contrase&ntilde;a</span>
+            <input type="password" placeholder="Crea una clave segura" required>
+          </label>
+          <button type="submit" class="primary-button">Crear cuenta</button>
         </form>
-        <div class="login-links-full">
-            <a href="#" id="show-login">¿Ya tienes cuenta? Inicia sesión</a>
-        </div>
-    </div>
+        <p class="muted-text small-text">
+          &iquest;Ya tienes cuenta?
+          <button class="link-button" id="show-login">Inicia sesi&oacute;n</button>
+        </p>
+      </section>
 
-    <!-- Página de recuperación (pantalla completa) -->
-    <div class="forgot-page" id="forgot-page" style="display:none;">
-        <img src="logo.png" alt="Logo" class="app-logo login-logo">
-        <form id="forgot-form" class="login-form-full">
-            <input type="email" id="forgot-email" placeholder="Email" required>
-            <button type="submit" class="primary-button">Enviar enlace</button>
-        </form>
-        <div class="login-links-full">
-            <a href="#" id="back-login">Volver a inicio de sesión</a>
+      <section class="card auth-card hidden" id="post-auth-section">
+        <img src="assets/logo.png" alt="Hydra" class="auth-logo auth-logo--large">
+        <h2 class="auth-title">Continuar</h2>
+        <div class="action-buttons">
+          <button class="primary-button" id="go-pairing">Configurar mi HydraPod</button>
+          <button class="secondary-button" id="go-join">Unirme a un grupo existente</button>
         </div>
-    </div>
+      </section>
+    </main>
+  </div>
 
-    <!-- Dashboard usuario -->
-    <div class="app-container" id="dashboard-page" style="display:none;">
-        <header class="app-header">
-            <img src="logo.png" alt="Logo" class="app-logo-small">
-            <h1>Smart Shower Analytics</h1>
-            <div class="user-stats">
-                <span class="level">Nivel: <span id="user-level">1</span></span>
-                <span class="points">Puntos: <span id="user-points">0</span></span>
-            </div>
-        </header>
-
-        <div class="main-content">
-            <div class="user-summary">
-                <h2>Resumen del Usuario</h2>
-                <div id="user-summary-info">
-                    <!-- Aquí se mostrarán datos del usuario -->
-                </div>
-            </div>
-            <div class="dashboard-graphics" id="dashboard-graphics" style="display:none;">
-                <div class="current-stats">
-                    <div class="stat-card temperature">
-                        <h3>Temperatura</h3>
-                        <div class="stat-value" id="current-temp">-- °C</div>
-                    </div>
-                    <div class="stat-card water">
-                        <h3>Agua</h3>
-                        <div class="stat-value" id="current-water">-- L</div>
-                    </div>
-                    <div class="stat-card energy">
-                        <h3>Energía</h3>
-                        <div class="stat-value" id="current-energy">-- kWh</div>
-                    </div>
-                    <div class="stat-card time">
-                        <h3>Tiempo</h3>
-                        <div class="stat-value" id="current-time">00:00</div>
-                    </div>
-                </div>
-                <div class="charts-container">
-                    <canvas id="realtime-chart"></canvas>
-                </div>
-                <div class="control-panel">
-                    <button id="start-button" class="primary-button">Iniciar Ducha</button>
-                    <button id="stop-button" class="danger-button" disabled>Finalizar Ducha</button>
-                </div>
-                <div class="session-summary" id="session-summary" style="display: none;">
-                    <h2>Resumen de la Sesión</h2>
-                    <div class="summary-stats"></div>
-                    <div class="ai-recommendations">
-                        <h3>Recomendaciones de IA</h3>
-                        <ul id="recommendations-list"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="achievements-panel">
-            <h2>Logros Recientes</h2>
-            <div class="achievements-list" id="achievements-list">
-                <!-- Los logros se agregarán aquí dinámicamente -->
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>

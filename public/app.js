@@ -1,6 +1,7 @@
 const HISTORY_KEY = 'hydra-history-stack';
 const GOAL_KEY = 'hydra-daily-goal';
 const INSIGHTS_KEY = 'hydra-last-insights';
+const LEADERBOARD_KEY = 'hydra-leaderboard';
 
 function getStoredHistory() {
   try {
@@ -36,6 +37,7 @@ function saveLastInsights(insights) {
   try {
     if (!insights) {
       sessionStorage.removeItem(INSIGHTS_KEY);
+    sessionStorage.removeItem(LEADERBOARD_KEY);
       return;
     }
     sessionStorage.setItem(INSIGHTS_KEY, JSON.stringify(insights));
@@ -50,6 +52,45 @@ function getLastInsights() {
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
+  }
+}
+
+function getBaseLeaderboard() {
+  return GROUP_MEMBERS.map(({ id, name, points, avatar }) => ({
+    id,
+    name,
+    points,
+    avatar: avatar || 'assets/avatar.png'
+  }));
+}
+
+function getStoredLeaderboard() {
+  try {
+    const stored = sessionStorage.getItem(LEADERBOARD_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        return parsed.map((entry) => ({
+          id: entry.id,
+          name: entry.name,
+          points: Number(entry.points) || 0,
+          avatar: entry.avatar || 'assets/avatar.png'
+        }));
+      }
+    }
+  } catch (error) {
+    console.warn('[Hydra] No se pudo leer el ranking almacenado:', error);
+  }
+  const base = getBaseLeaderboard();
+  persistLeaderboard(base);
+  return base;
+}
+
+function persistLeaderboard(entries) {
+  try {
+    sessionStorage.setItem(LEADERBOARD_KEY, JSON.stringify(entries));
+  } catch (error) {
+    console.warn('[Hydra] No se pudo guardar el ranking:', error);
   }
 }
 
@@ -76,7 +117,30 @@ function navigateBack() {
 window.navigateTo = navigateTo;
 window.navigateBack = navigateBack;
 
+function logout() {
+  try {
+    sessionStorage.removeItem('hydra-last-session');
+    sessionStorage.removeItem(INSIGHTS_KEY);
+    sessionStorage.removeItem(LEADERBOARD_KEY);
+    sessionStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(GOAL_KEY);
+  } catch (error) {
+    console.warn('[Hydra] Error limpiando datos de sesion:', error);
+  }
+  window.location.href = 'index.html';
+}
+
+window.logout = logout;
+
 // Mock data helpers -------------------------------------------------------
+const USER_ID = 'user-hydra-001';
+const GROUP_MEMBERS = [
+  { id: USER_ID, name: 'Valentina', points: 1240, avatar: 'assets/avatar.png' },
+  { id: 'user-hydra-002', name: 'Diego', points: 1080, avatar: 'assets/avatar.png' },
+  { id: 'user-hydra-003', name: 'Camila', points: 980, avatar: 'assets/avatar.png' },
+  { id: 'user-hydra-004', name: 'Laura', points: 860, avatar: 'assets/avatar.png' }
+];
+
 const tips = [
   'Apaga la ducha mientras te enjabonas para ahorrar hasta 6 litros por minuto.',
   'Regula la temperatura antes de entrar para evitar ajustes constantes.',
@@ -86,33 +150,37 @@ const tips = [
 
 function getUserMock() {
   const storedGoal = getStoredGoal(20);
+  const leaderboard = getStoredLeaderboard();
+  const member = leaderboard.find((entry) => entry.id === USER_ID) || GROUP_MEMBERS[0];
+
   return {
-    id: 'user-hydra-001',
-    name: 'Valentina Ríos',
+    id: USER_ID,
+    name: member ? `${member.name} Rios` : 'Usuario Hydra',
     level: 4,
-    points: 1240,
+    points: member?.points || 0,
     monthlySavingsCurrency: 48.7,
     monthlySavingsWater: 320,
     dailyGoalLiters: storedGoal,
-    showersCount: 42,
+    showersCount: 42
   };
 }
 
 function getGroupMock() {
+  const leaderboard = getStoredLeaderboard();
+  leaderboard.sort((a, b) => b.points - a.points);
+  const totalSavingsCurrency = 186.5;
+  const totalSavingsWater = 1210;
+
   return {
-    name: 'Familia Ríos',
-    totalSavingsCurrency: 186.5,
-    totalSavingsWater: 1210,
-    members: [
-      { name: 'Valentina', points: 1240 },
-      { name: 'Diego', points: 990 },
-      { name: 'Camila', points: 880 },
-      { name: 'Laura', points: 650 },
-    ],
+    name: 'Familia Rios',
+    totalSavingsCurrency,
+    totalSavingsWater,
+    members: leaderboard,
+    totalPoints: leaderboard.reduce((acc, item) => acc + item.points, 0),
     challenges: [
-      { title: 'Ahorrar 100L esta semana', progress: 72, deadline: '3 días restantes' },
-      { title: 'Mantener duchas de 5 min', progress: 45, deadline: 'En curso' },
-    ],
+      { title: 'Ahorrar 100L esta semana', progress: 72, deadline: '3 dias restantes' },
+      { title: 'Mantener duchas de 5 min', progress: 45, deadline: 'En curso' }
+    ]
   };
 }
 
@@ -133,14 +201,9 @@ function getSessionsMock() {
 }
 
 function getLeaderboardMock() {
-  const leaderboard = [
-    { name: 'Valentina', points: 1240 },
-    { name: 'Diego', points: 1180 },
-    { name: 'Camila', points: 1095 },
-    { name: 'Laura', points: 960 },
-    { name: 'Renzo', points: 820 },
-  ];
-  return leaderboard.sort(() => Math.random() - 0.5);
+  const leaderboard = getStoredLeaderboard().map((entry) => ({ ...entry }));
+  leaderboard.sort((a, b) => b.points - a.points);
+  return leaderboard;
 }
 
 function getLiveTelemetryMock(elapsedSeconds = 0) {
@@ -394,12 +457,14 @@ function initLivePage() {
       energy: totalEnergyKwh,
       cost,
       points,
+      totalScore: user.points,
       durationSeconds: elapsedSeconds,
       formattedDuration: formatTime(elapsedSeconds),
       averageTemperature: Number(averageTemp.toFixed(1)),
       recommendations: [],
+      previousGoalLiters: user.dailyGoalLiters,
       newGoalLiters: user.dailyGoalLiters,
-      fallbackTip: fallbackTip
+      tip: fallbackTip
     };
 
     const insights = await requestSessionRecommendations(user.id, sessionSummary);
@@ -412,7 +477,12 @@ function initLivePage() {
 
       lastSession.recommendations = tips;
       lastSession.newGoalLiters = nextGoal;
+      lastSession.tip = tips[0] || fallbackTip;
 
+      const updatedTotal = saveGroupLeaderboard(tips, nextGoal, points);
+      if (updatedTotal !== null) {
+        lastSession.totalScore = updatedTotal;
+      }
       saveStoredGoal(nextGoal);
       saveLastInsights({
         recommendations: tips,
@@ -422,7 +492,12 @@ function initLivePage() {
     } else {
       lastSession.recommendations = [fallbackTip];
       lastSession.newGoalLiters = user.dailyGoalLiters;
+      lastSession.tip = fallbackTip;
       lastSession.aiError = insights.error;
+      const fallbackTotal = saveGroupLeaderboard([fallbackTip], user.dailyGoalLiters, points);
+      if (fallbackTotal !== null) {
+        lastSession.totalScore = fallbackTotal;
+      }
       saveLastInsights(null);
     }
 
@@ -465,6 +540,47 @@ async function requestSessionRecommendations(userId, sessionSummary) {
     };
   }
 }
+
+function saveGroupLeaderboard(recommendations, newGoal, pointsEarned) {
+  try {
+    const leaderboard = getStoredLeaderboard();
+    const numericPoints = Number(pointsEarned);
+    const bonusPoints = Number.isFinite(numericPoints) ? Math.max(0, Math.round(numericPoints)) : 0;
+    let updatedTotal = null;
+
+    leaderboard.forEach((entry) => {
+      if (entry.id === USER_ID) {
+        entry.points += bonusPoints;
+        entry.lastGoal = newGoal;
+        entry.lastTips = recommendations;
+        updatedTotal = entry.points;
+      }
+    });
+
+    if (updatedTotal === null) {
+      const baseMember = GROUP_MEMBERS.find((item) => item.id === USER_ID) || { name: 'Usuario Hydra', avatar: 'assets/avatar.png' };
+      const fallbackEntry = {
+        id: USER_ID,
+        name: baseMember.name,
+        points: bonusPoints,
+        avatar: baseMember.avatar || 'assets/avatar.png',
+        lastGoal: newGoal,
+        lastTips: recommendations
+      };
+      leaderboard.push(fallbackEntry);
+      updatedTotal = fallbackEntry.points;
+    }
+
+    leaderboard.sort((a, b) => b.points - a.points);
+    persistLeaderboard(leaderboard);
+
+    return updatedTotal;
+  } catch (error) {
+    console.warn('[Hydra] No se pudo actualizar el ranking local:', error);
+    return null;
+  }
+}
+
 function initSummaryPage() {
   const summary = JSON.parse(sessionStorage.getItem('hydra-last-session') || '{}');
   const litersEl = document.getElementById('summary-liters');
@@ -503,6 +619,14 @@ function initSummaryPage() {
   } else {
     statusEl.textContent = 'Recomendaciones generadas por Hydra Coach (Mistral).';
     statusEl.classList.remove('status-text--error');
+  }
+
+  if (summary.totalScore != null) {
+    const totalText = ` Total acumulado: ${summary.totalScore} pts.`;
+    statusEl.textContent += totalText;
+  }
+  if (summary.previousGoalLiters != null && summary.newGoalLiters != null && summary.newGoalLiters !== summary.previousGoalLiters) {
+    statusEl.textContent += ` Nueva meta: ${summary.newGoalLiters} L (antes ${summary.previousGoalLiters} L).`;
   }
 }
 
@@ -564,11 +688,11 @@ function initRankingPage() {
   const list = document.getElementById('ranking-list');
   leaderboard.forEach((entry) => {
     const li = document.createElement('li');
-    li.textContent = `${entry.name}`;
+    li.textContent = entry.name;
     const span = document.createElement('span');
     span.textContent = `${entry.points} pts`;
     li.appendChild(span);
-    if (entry.name === user.name.split(' ')[0] || entry.name === user.name) {
+    if (entry.id === user.id) {
       li.classList.add('me');
     }
     list.appendChild(li);
@@ -582,6 +706,13 @@ function initProfilePage() {
   document.getElementById('profile-level').textContent = `Nivel ${user.level}`;
   document.getElementById('profile-points').textContent = user.points;
   document.getElementById('profile-showers').textContent = sessions.length;
+
+  const logoutBtn = document.getElementById('logout-button');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      logout();
+    });
+  }
 }
 
 function initPremiumPage() {

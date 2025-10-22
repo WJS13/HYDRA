@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydra · Perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="profile">
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-button" onclick="navigateBack()">←</button>
+      <h1>Perfil</h1>
+    </header>
+
+    <main class="page-content">
+      <section class="card center-card">
+        <img src="assets/avatar.png" alt="Avatar" class="avatar avatar--large">
+        <h2 id="profile-name">Usuario Hydra</h2>
+        <p id="profile-level" class="muted-text">Nivel 1</p>
+        <div class="stat-row">
+          <div>
+            <p class="label">Puntos</p>
+            <h3 id="profile-points">0</h3>
+          </div>
+          <div>
+            <p class="label">Duchas</p>
+            <h3 id="profile-showers">0</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <button class="primary-button" onclick="navigateTo('history.html')">Ver historial</button>
+        <button class="secondary-button" onclick="navigateTo('premium.html')">Hydra Premium</button>
+        <button class="danger-button" id="logout-button">Cerrar sesión</button>
+      </section>
+    </main>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>
