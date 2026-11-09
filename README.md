@@ -18,10 +18,22 @@ Demo del MVP mobile-first para controlar HydraPod, el asistente de duchas inteli
 5. `summary.html` presenta metricas reales, nuevas recomendaciones y la meta propuesta por Mistral.
 6. `history.html`, `group.html`, `challenges.html`, `ranking.html`, `profile.html`, etc. completan el flujo del usuario.
 
-## Backend (Node + Express)
-- `src/index.js` expone `/api/chat` y `/api/recommendations` usando `ChatController`.
-- `HuggingFaceService` centraliza la interaccion con el modelo (chat + insights).
-- Configuracion requerida: `HUGGINGFACE_API_TOKEN` y (opcional) `MISTRAL_MODEL` en `.env`.
+## Backend (Node + Express + Supabase)
+- `src/index.js` expone `/api/chat`, `/api/recommendations`, `/api/config/public`, `/api/user/:id/profile`, `/api/user/:id/sessions`, y `/api/leaderboard`.
+- `HuggingFaceService` centraliza la interacción con el modelo Mistral (chat + insights).
+- `SupabaseService` (`src/services/supabase-service.js`) gestiona la persistencia de usuarios, sesiones de ducha, recomendaciones de IA y rankings.
+- Esquema de base de datos listo en `database/schema.sql` (compatible con Supabase PostgreSQL, RLS y Realtime).
+
+## Configuración de Supabase
+1. En tu proyecto de [Supabase](https://supabase.com), ve al **SQL Editor** y ejecuta el script completo [`database/schema.sql`](file:///c:/Users/LENOVO/Downloads/MT/HYDRA/HYDRA/database/schema.sql).
+2. Obtén la URL y las claves en **Project Settings > API**.
+3. Añade los valores en tu archivo `.env`:
+```env
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=tu-anon-key-aqui
+SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key-aqui
+```
+*Nota: Si las claves de Supabase no están configuradas, el sistema funcionará automáticamente en modo de simulación/demo local sin interrumpir la app.*
 
 ## Desarrollo
 ```bash

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body data-page="index">
   <div class="app-shell">
     <main class="auth-container full-screen" id="auth-container">
@@ -24,7 +26,8 @@
             <span>Contrase&ntilde;a</span>
             <input type="password" placeholder="********" required>
           </label>
-          <button type="submit" class="primary-button">Entrar</button>
+          <p id="login-feedback" class="status-text small-text" style="display:none;"></p>
+          <button type="submit" class="primary-button" id="login-btn">Entrar</button>
         </form>
         <p class="muted-text small-text">
           &iquest;Nuevo por aqu&iacute;?
@@ -46,9 +49,10 @@
           </label>
           <label class="form-field">
             <span>Contrase&ntilde;a</span>
-            <input type="password" placeholder="Crea una clave segura" required>
+            <input type="password" placeholder="Crea una clave segura" required minlength="6">
           </label>
-          <button type="submit" class="primary-button">Crear cuenta</button>
+          <p id="register-feedback" class="status-text small-text" style="display:none;"></p>
+          <button type="submit" class="primary-button" id="register-btn">Crear cuenta</button>
         </form>
         <p class="muted-text small-text">
           &iquest;Ya tienes cuenta?
@@ -67,6 +71,9 @@
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
   <script src="app.js" defer></script>
 </body>
+
 </html>

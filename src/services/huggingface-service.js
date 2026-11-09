@@ -137,7 +137,16 @@ Calcula una nueva meta diaria de litros (varía máximo +/-5L respecto a la meta
       });
 
       if (!result.success) {
-        return result;
+        console.warn(`[Hydra] Advertencia IA: ${result.error}. Activando generador heurístico de Hydra Coach.`);
+        const fallback = this.generateFallbackInsights(sessionSummary);
+        return {
+          success: true,
+          recommendations: fallback.tips,
+          newGoalLiters: fallback.newGoalLiters,
+          raw: 'heuristic_fallback',
+          isFallback: true,
+          aiNotice: result.error
+        };
       }
 
       const rawContent = result.message.content?.trim() ?? '';
@@ -158,11 +167,42 @@ Calcula una nueva meta diaria de litros (varía máximo +/-5L respecto a la meta
       };
     } catch (error) {
       console.error('[Hydra] Error al generar recomendaciones:', error);
+      const fallback = this.generateFallbackInsights(sessionSummary);
       return {
-        success: false,
-        error: error.message || 'No se pudo generar recomendaciones'
+        success: true,
+        recommendations: fallback.tips,
+        newGoalLiters: fallback.newGoalLiters,
+        raw: 'fallback_error',
+        isFallback: true
       };
     }
+  }
+
+  generateFallbackInsights(sessionSummary) {
+    const prevGoal = Number(sessionSummary?.previous_goal_liters) || 20;
+    const totalLiters = Number(sessionSummary?.total_liters) || 20;
+    let newGoal = prevGoal;
+
+    if (totalLiters > prevGoal) {
+      newGoal = Math.min(60, Math.round(totalLiters * 0.95));
+    } else {
+      newGoal = Math.max(10, Math.round(totalLiters * 0.9));
+    }
+
+    const tips = [
+      'Apaga el flujo de agua mientras te enjabonas para ahorrar hasta 6 litros por minuto.',
+      'Mantén la temperatura estable desde el inicio para evitar consumos pico.',
+      'Excelente constancia: tu HydraPod sigue aprendiendo de tus hábitos de ducha.'
+    ];
+
+    if (sessionSummary?.average_temperature_c > 38) {
+      tips[1] = 'Reducir la temperatura 1°C o 2°C ahorra hasta un 10% de energía eléctrica en tu calentador.';
+    }
+
+    return {
+      tips,
+      newGoalLiters: newGoal
+    };
   }
 
   extractJson(content) {

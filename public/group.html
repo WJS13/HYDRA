@@ -13,27 +13,45 @@
   <div class="app-shell">
     <header class="topbar">
       <button class="icon-button" onclick="navigateBack()">←</button>
-      <h1>Grupo familiar</h1>
+      <h1 id="group-title">Grupo familiar</h1>
     </header>
 
     <main class="page-content">
-      <section class="card highlight-card">
-        <p class="label">Ahorro del grupo</p>
+      <section class="card highlight-card" id="group-stats-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <p class="label" style="margin: 0;">Ahorro del grupo</p>
+          <span id="group-code-pill" class="chip" style="cursor: pointer; font-size: 0.8rem;" title="Haz clic para copiar">
+            Código: <strong id="group-code">—</strong> 📋
+          </span>
+        </div>
         <h2 id="group-total-savings">S/ 0.00</h2>
         <p class="muted-text small-text">Equivalente a <span id="group-total-water">0 L</span> menos de consumo.</p>
       </section>
 
-      <section class="card">
+      <!-- Estado: Si el usuario aún no tiene grupo -->
+      <section class="card hidden" id="no-group-card">
+        <h2>Aún no tienes grupo</h2>
+        <p class="muted-text small-text">Únete a tu familia o crea tu propio hogar para ahorrar y competir juntos.</p>
+        <div class="action-buttons" style="margin-top: 16px;">
+          <button class="primary-button" id="create-new-group-btn">Crear mi hogar</button>
+          <button class="secondary-button" onclick="navigateTo('join.html')">Unirme con código</button>
+        </div>
+      </section>
+
+      <section class="card" id="members-card">
         <h2>Miembros</h2>
         <ul class="list" id="group-members"></ul>
       </section>
 
-      <section class="grid">
-        <button class="secondary-button" id="invite-member">Invitar miembro</button>
-        <button class="secondary-button" id="create-challenge">Crear reto</button>
+      <section class="grid" id="group-actions-grid">
+        <button class="secondary-button" id="invite-member">Copiar invitación</button>
+        <button class="secondary-button" id="create-challenge">Ver retos</button>
       </section>
     </main>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <script src="nav.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
