@@ -1,0 +1,19 @@
+{
+  "name": "Hydra - Control Inteligente de Energía y Agua",
+  "short_name": "Hydra",
+  "description": "Monitoreo y gestión inteligente del consumo energético e hídrico con HydraPod y asistencia de IA",
+  "start_url": "/dashboard.html",
+  "display": "standalone",
+  "background_color": "#f4fbfd",
+  "theme_color": "#26c6da",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
